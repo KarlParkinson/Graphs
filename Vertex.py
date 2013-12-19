@@ -41,7 +41,7 @@ class DrawableVertex(Vertex):
     def __init__(self, center, key):
         super().__init__(key)
         self.center = center
-        self.radius = 5
+        self.radius = 10
         self.colour = "black"
         self.key = key
         
@@ -54,6 +54,12 @@ class DrawableVertex(Vertex):
     def setVisited(self, value, colour):
         self.visited = value
         self.setColour(colour)
+        
+    def clickedOn(self, pos):
+        if (((pos[0]-self.center[0])**2 + (pos[1]-self.center[1])**2) <= self.radius):
+            return True
+        else:
+            return False
         
     
     

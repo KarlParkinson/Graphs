@@ -62,7 +62,7 @@ g.addEdge(b, d)
 g.addEdge(b, e)
 g.addEdge(c, f)
 g.addEdge(c, h)
-g.addEdge(a, h)
+#g.addEdge(a, h)
 
 
 pygame.init()

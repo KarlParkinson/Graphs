@@ -58,12 +58,13 @@ class Graph:
 class DrawableGraph(Graph):
     def __init__(self):
         super().__init__()
+        #self.font = pygame.font.SysFont('default', 10)
         
     def addDrawableVertex(self, center, key):
         self.order += 1
         vertex = DrawableVertex(center, key)
         self.vertices[key] = vertex
-        return vertex
+        #return vertex
         
     def drawGraph(self, surface):
         for v in self.vertices.keys():
@@ -71,7 +72,15 @@ class DrawableGraph(Graph):
         for v in self.vertices.keys():
             start = self.vertices[v]
             for n in start.getNeighbours():
-                pygame.draw.line(surface, pygame.Color("black"), start.center, n.center)
-        
-            
+                self.drawEdge(start, n, surface, "black")
+
+                
+    def drawEdge(self, start, end, surface, color):
+        pygame.draw.line(surface, pygame.Color(color), start.center, end.center)
+        half = ((start.center[0]+end.center[0])/2, (start.center[1]+end.center[1])/2)
+        font = pygame.font.SysFont('default', 25)
+        blitSurface = font.render(str(start.neighbours[end]), True, pygame.Color("black"))
+        surface.blit(blitSurface, half)
+        pygame.display.update()
+                
             

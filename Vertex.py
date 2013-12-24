@@ -7,6 +7,9 @@ class Vertex:
         self.key = key
         self.neighbours = {}
         self.visited = False
+        self.status = 0
+        self.parent = None
+        self.distance = None
 
     
     def addNeighbour(self, nbr, weight=0):
@@ -32,6 +35,24 @@ class Vertex:
     
     def setVisited(self, value):
         self.visited = value
+        
+    def setStatus(self, status):
+        self.status = status
+        
+    def getStatus(self):
+        return self.status
+        
+    def setParent(self, parent):
+        self.parent = parent
+        
+    def getParent(self):
+        return self.parent
+    
+    def getDistance(self):
+        return self.distance
+    
+    def setDistance(self, distance):
+        self.distance = distance
         
 
 """

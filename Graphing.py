@@ -7,6 +7,8 @@ from pygame.locals import *
 
 from Graph import Graph, DrawableGraph
 from Vertex import Vertex, DrawableVertex
+from MST import Node
+from Pathfinding import PathfindingNode
 
 def drawEdges(graph, surface):
     startFound = False
@@ -22,7 +24,7 @@ def drawEdges(graph, surface):
                         startVertex = v
                     elif(v.clickedOn(event.pos) and startFound):
                         endVertex = v
-                        graph.addEdge(startVertex, endVertex, 0)
+                        graph.addEdge(startVertex, endVertex, random.randint(0, 10))
                         graph.drawGraph(surface)
                         pygame.display.update()
                         startFound = False
@@ -46,7 +48,8 @@ def handleDFS(graph, surface):
                     if(v.clickedOn(event.pos)):
                         startVertex = v
                         for v in graph:
-                            v.setVisited(False, "black")                        
+                            v.setVisited(False, "black")
+                            #v.draw(surface)
                         DFS(graph, startVertex, surface)
                         return
                 
@@ -74,7 +77,7 @@ def BFS(graph, start, surface):
                 neighbour.draw(surface)
                 pygame.display.update()
                 time.sleep(0.5)
-                print(str(current.getId()) + "->" + str(neighbour.getId()))
+                #print(str(current.getId()) + "->" + str(neighbour.getId()))
                 #print(str(neighbour.getId()))
                 q.append(neighbour)
                 
@@ -85,8 +88,117 @@ def DFS(graph, start, surface):
     time.sleep(0.5)
     for neighbour in start.getNeighbours():
         if (not neighbour.getVisited()):
-            print(str(start.getId()) + "->" + str(neighbour.getId()))
+            #print(str(start.getId()) + "->" + str(neighbour.getId()))
             DFS(graph, neighbour, surface)
+            
+def handlePrims(graph, surface):
+    while True:
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    for v in graph:
+                        if(v.clickedOn(event.pos)):
+                            startVertex = v                     
+                            primsAlgorithm(graph, startVertex, surface)
+                            return    
+            
+def primsAlgorithm(graph, start, surface):
+    for v in graph:
+        v.setStatus(0)
+        
+    start.setStatus(2)
+    minTree = []
+    fringeList = []
+    current = start
+    minTree.append(current)
+    while (len(minTree) < graph.order):
+        #minTree.append(current)
+        for neighbour in current.getNeighbours():
+            if (neighbour.getStatus() == 0):
+                node = Node(neighbour)
+                neighbour.setStatus(1)
+                node.setParent(current)
+                node.setWeight(current.neighbours[neighbour])
+                fringeList.insert(0, node)
+                #neighbour.setParent(current)
+                # add weight of edge to priority queue
+            elif (neighbour.getStatus() == 1):
+                node = findNode(fringeList, neighbour)
+                if (node.getWeight() > current.neighbours[neighbour]):
+                    node.setWeight(current.neighbours[neighbour])
+                    node.setParent(current)
+        minWeight = findMin(fringeList)
+        graph.drawEdge(minWeight.getParent(), minWeight.getVertex(), surface, "yellow")
+        time.sleep(0.5)
+        #print(str(minWeight.getParent().getId()) + "->" + str(minWeight.getVertex().getId()))
+        current = minWeight.getVertex()
+        fringeList.remove(minWeight)
+        current.setStatus(2)
+        minTree.append(current)
+    
+    #return fringeList
+    
+def handleDijkstra(graph, surface):
+    while True:
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    for v in graph:
+                        if(v.clickedOn(event.pos)):
+                            startVertex = v                     
+                            dijkstrasAlgorithm(graph, startVertex, surface)
+                            return  
+    
+# 0 -> unseen
+# 1 -> fringe
+# 2 -> inTree
+def dijkstrasAlgorithm(graph, start, surface):
+    for v in graph:
+        v.setStatus(0)
+        
+    start.setStatus(2)
+    pathTree = []
+    fringeList = []
+    current = start
+    current.setDistance(0)
+    pathTree.append(current)
+    while (len(pathTree) < graph.order):
+        #minTree.append(current)
+        for neighbour in current.getNeighbours():
+            if (neighbour.getStatus() == 0):
+                node = Node(neighbour)
+                neighbour.setStatus(1)
+                node.setParent(current)
+                neighbour.setDistance(current.getDistance() + current.neighbours[neighbour])
+                node.setWeight(current.neighbours[neighbour])
+                fringeList.insert(0, node)
+                #neighbour.setParent(current)
+                # add weight of edge to priority queue
+            elif (neighbour.getStatus() == 1):
+                node = findNode(fringeList, neighbour)
+                if (neighbour.getDistance() > (current.getDistance() + current.neighbours[neighbour])):
+                    neighbour.setDistance(current.getDistance() + current.neighbours[neighbour])
+                    node.setParent(current)
+        minWeight = findMin(fringeList)
+        #print(str(minWeight.getParent().getId()) + "->" + str(minWeight.getVertex().getId()))
+        graph.drawEdge(minWeight.getParent(), minWeight.getVertex(), surface, "blue")
+        time.sleep(0.5)
+        current = minWeight.getVertex()
+        fringeList.remove(minWeight)
+        current.setStatus(2)
+        pathTree.append(current)
+
+
+def findMin(nodeList):
+    minimum = nodeList[0].getWeight()
+    minNode = nodeList[0]
+    for node in nodeList:
+        if (node.getWeight() < minimum):
+            minNode = node
+    return minNode
+
+def findNode(nodeList, vertex):
+    for node in nodeList:
+        if (node.getVertex() == vertex):
+            return node
             
 
 
@@ -109,8 +221,8 @@ g = DrawableGraph()
 
 
 pygame.init()
-width = 500
-height = 500
+width = 800
+height = 800
 
 window = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 window.fill(pygame.Color("white"))
@@ -154,6 +266,10 @@ while True:
                 handleDFS(g, window)
             if event.key == 98:
                 handleBFS(g, window)
+            if event.key == 112:
+                handlePrims(g, window)
+            if event.key == 115:
+                handleDijkstra(g, window)
                 
         
         #g.drawGraph(window)

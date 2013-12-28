@@ -1,5 +1,6 @@
 from Graph import Graph
 from Vertex import Vertex
+from PriorityQueue import PriorityQueue
 
 
 class Node:
@@ -64,6 +65,35 @@ def primsAlgorithm(graph, start):
     
     return fringeList
 
+# 0 -> unseen
+# 1 -> fringe
+# 2 -> inTree
+def primsAlgorithm2(graph, start):
+    for v in graph:
+        v.setStatus(0)
+        
+    pq = PriorityQueue()
+    #heapq.heappush(pq, (0, start))
+    pq.enQueue((0, start))
+    while (not pq.isEmpty()):
+        current = pq.deQueue()[1]
+        current.setStatus(2)
+        #if(current.getParent() != None):
+          #  print(str(current.getParent().getId()) + "->" + str(current.getId()))
+        for neighbour in current.getNeighbours():
+                    if (neighbour.getStatus() == 0):        
+                        neighbour.setStatus(1)
+                        neighbour.setParent(current)
+                        neighbour.setpqWeight(current.neighbours[neighbour])
+                        pq.enQueue((neighbour.getpqWeight(), neighbour))
+                    elif (neighbour.getStatus() == 1):
+                        if (neighbour.getpqWeight() > current.neighbours[neighbour]):
+                            old = (neighbour.getpqWeight(), neighbour)
+                            neighbour.setpqWeight(current.neighbours[neighbour])
+                            pq.updatePriority(old, (neighbour.getpqWeight(), neighbour))
+                            neighbour.setParent(current)
+    
+                            
 
 def findMin(nodeList):
     minimum = nodeList[0].getWeight()
@@ -87,12 +117,12 @@ b = g.addVertex("b")
 c = g.addVertex("c")
 #d = g.addVertex("d")
 
-g.addEdge(a, b, 1)
+g.addEdge(a, b, 7)
 g.addEdge(a, c, 2)
 g.addEdge(b, c, 5)
 #g.addEdge(d, a, 1)
 #g.addEdge(a, c, 0)
 
-#primsAlgorithm(g, a)
+primsAlgorithm2(g, a)
 
         

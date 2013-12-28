@@ -7,8 +7,8 @@ from pygame.locals import *
 
 from Graph import Graph, DrawableGraph
 from Vertex import Vertex, DrawableVertex
-from MST import Node
 from Pathfinding import PathfindingNode
+from PriorityQueue import PriorityQueue
 
 def drawEdges(graph, surface):
     startFound = False
@@ -102,6 +102,35 @@ def handlePrims(graph, surface):
                             return    
             
 def primsAlgorithm(graph, start, surface):
+    
+    for v in graph:
+        v.setStatus(0)
+        v.setParent(None)
+        
+    pq = PriorityQueue()
+    #heapq.heappush(pq, (0, start))
+    pq.enQueue((0, start))
+    while (not pq.isEmpty()):
+        current = pq.deQueue()[1]
+        current.setStatus(2)
+        if(current.getParent() != None):
+            graph.drawEdge(current.getParent(), current, surface, "yellow")
+            time.sleep(0.5)
+            #print(str(current.getParent().getId()) + "->" + str(current.getId()))
+        for neighbour in current.getNeighbours():
+                    if (neighbour.getStatus() == 0):        
+                        neighbour.setStatus(1)
+                        neighbour.setParent(current)
+                        neighbour.setpqWeight(current.neighbours[neighbour])
+                        #print(str(neighbour.getpqWeight()))
+                        pq.enQueue((neighbour.getpqWeight(), neighbour))
+                    elif (neighbour.getStatus() == 1):
+                        if (neighbour.getpqWeight() > current.neighbours[neighbour]):
+                            old = (neighbour.getpqWeight(), neighbour)
+                            neighbour.setpqWeight(current.neighbours[neighbour])
+                            pq.updatePriority(old, (neighbour.getpqWeight(), neighbour))
+                            neighbour.setParent(current)    
+    """
     for v in graph:
         v.setStatus(0)
         
@@ -136,6 +165,7 @@ def primsAlgorithm(graph, start, surface):
         minTree.append(current)
     
     #return fringeList
+    """
     
 def handleDijkstra(graph, surface):
     while True:
@@ -151,6 +181,46 @@ def handleDijkstra(graph, surface):
 # 1 -> fringe
 # 2 -> inTree
 def dijkstrasAlgorithm(graph, start, surface):
+    pq = PriorityQueue()
+    for v in graph:
+        v.setStatus(0)
+        v.setDistance(float("inf"))
+        #print((v.getDistance(), v))
+        pq.enQueue((v.getDistance(), v))
+            
+        #start.setStatus(2)
+    start.setDistance(0)
+    pq.updatePriority((float("inf"), start), (0, start))
+    #heapq.heappush(pq, (0, start))
+    #pq.enQueue((0, start))
+    #while (not pq.isEmpty()):
+    for i in range(0, graph.order):
+        current = pq.deQueue()[1]
+        current.setStatus(2)
+        if(current.getParent() != None):
+            graph.drawEdge(current.getParent(), current, surface, "blue")
+            time.sleep(0.5)            
+            #if(current.getParent() != None):
+                #  print(str(current.getParent().getId()) + "->" + str(current.getId()))
+        for neighbour in current.getNeighbours():
+            """
+            if (neighbour.getStatus() == 0):        
+                neighbour.setStatus(1)
+                neighbour.setParent(current)
+                #neighbour.setpqWeight(current.neighbours[neighbour])
+                neighbour.setDistance(current.getDistance() + current.neighbours[neighbour])
+                pq.enQueue((neighbour.getDistance(), neighbour))
+            """
+            #elif (neighbour.getStatus() == 1):
+            if (neighbour.getDistance()) > (current.getDistance() + current.neighbours[neighbour]):
+                old = (neighbour.getDistance(), neighbour)
+                        #neighbour.setpqWeight(current.neighbours[neighbour])
+                        #pq.updatePriority(old, (neighbour.getpqWeight(), neighbour))
+                neighbour.setParent(current)
+                neighbour.setDistance(current.getDistance() + current.neighbours[neighbour]) 
+                pq.updatePriority(old, (neighbour.getDistance(), neighbour))
+    
+    """
     for v in graph:
         v.setStatus(0)
         
@@ -185,6 +255,7 @@ def dijkstrasAlgorithm(graph, start, surface):
         fringeList.remove(minWeight)
         current.setStatus(2)
         pathTree.append(current)
+        """
 
 
 def findMin(nodeList):
@@ -211,9 +282,9 @@ g = DrawableGraph()
 #f = g.addDrawableVertex((275, 225), 6)
 #h = g.addDrawableVertex((335, 225), 7)
 
-#g.addEdge(a, b)
-#g.addEdge(a, c)
-#g.addEdge(b, d)
+#g.addEdge(a, b, 4)
+#g.addEdge(a, c, 1)
+#g.addEdge(c, b, 2)
 #g.addEdge(b, e)
 #g.addEdge(c, f)
 #g.addEdge(c, h)

@@ -64,7 +64,7 @@ class DrawableGraph(Graph):
         self.order += 1
         vertex = DrawableVertex(center, key)
         self.vertices[key] = vertex
-        #return vertex
+        return vertex
         
     def drawGraph(self, surface):
         for v in self.vertices.keys():

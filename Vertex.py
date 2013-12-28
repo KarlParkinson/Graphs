@@ -10,6 +10,7 @@ class Vertex:
         self.status = 0
         self.parent = None
         self.distance = None
+        self.pqWeight = None
 
     
     def addNeighbour(self, nbr, weight=0):
@@ -23,6 +24,11 @@ class Vertex:
     def getId(self):
         return self.key
     
+    def setpqWeight(self, weight):
+        self.pqWeight = weight
+        
+    def getpqWeight(self):
+        return self.pqWeight
 
     def getWeight(self, nbr):
         return self.neighbours[nbr]
@@ -53,6 +59,9 @@ class Vertex:
     
     def setDistance(self, distance):
         self.distance = distance
+        
+    def __lt__(self, other):
+        return other
         
 
 """

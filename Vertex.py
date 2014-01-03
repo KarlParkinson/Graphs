@@ -1,6 +1,6 @@
 import pygame
 
-from pygame.locals import *
+from tkinter import *
 
 class Vertex:
     def __init__(self, key):
@@ -76,14 +76,13 @@ class DrawableVertex(Vertex):
         self.key = key
         
     def draw(self, surface):
-        pygame.draw.circle(surface, pygame.Color(self.colour), self.center, self.radius)
+        surface.create_oval(self.center[0]-self.radius, self.center[1]-self.radius, self.center[0]+self.radius, self.center[1]+self.radius, fill=self.colour)
         
     def setColour(self, colour):
         self.colour = colour
         
-    def setVisited(self, value, colour):
+    def setVisited(self, value):
         self.visited = value
-        self.setColour(colour)
         
     def clickedOn(self, pos):
         if (((pos[0]-self.center[0])**2 + (pos[1]-self.center[1])**2) <= self.radius):

@@ -1,8 +1,6 @@
-import pygame
-
 from Vertex import Vertex
 from Vertex import DrawableVertex
-from pygame.locals import *
+from tkinter import *
 
 
 class Graph:
@@ -66,21 +64,32 @@ class DrawableGraph(Graph):
         self.vertices[key] = vertex
         return vertex
         
-    def drawGraph(self, surface):
+    def drawGraph(self, canvas):
         for v in self.vertices.keys():
-            self.vertices[v].draw(surface)
+            self.vertices[v].draw(canvas)
         for v in self.vertices.keys():
             start = self.vertices[v]
+            #print(start)
             for n in start.getNeighbours():
-                self.drawEdge(start, n, surface, "black")
+                #print(n)
+                self.drawEdge(start, n, canvas, "black")
 
-                
+               
     def drawEdge(self, start, end, surface, color):
-        pygame.draw.line(surface, pygame.Color(color), start.center, end.center)
+        a = start.center[0]
+        b = start.center[1]
+        c = end.center[0]
+        d = end.center[1]
+        #print(start.center[0])
+        #print(start.center[1])
+        #print(end.center[0])
+        #print(end.center[1])
+        surface.create_line(a, b, c, d, fill=color)
         half = ((start.center[0]+end.center[0])/2, (start.center[1]+end.center[1])/2)
-        font = pygame.font.SysFont('default', 25)
-        blitSurface = font.render(str(start.neighbours[end]), True, pygame.Color("black"))
-        surface.blit(blitSurface, half)
-        pygame.display.update()
+        surface.create_text(half[0], half[1], text=str(start.neighbours[end]), anchor=NE)
+        #font = pygame.font.SysFont('default', 25)
+        #blitSurface = font.render(str(start.neighbours[end]), True, pygame.Color("black"))
+        #surface.blit(blitSurface, half)
+        #pygame.display.update()
                 
-            
+           

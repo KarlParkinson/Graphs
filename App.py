@@ -65,9 +65,11 @@ class App:
         self.root.config(menu=menubar)        
         
     def addVertices(self):
+        messagebox.showinfo("Add Vertex", "Click anywhere to add a vertex")
         self.canvas.bind("<Button-1>", self.newVertex)
         
     def addEdges(self):
+        messagebox.showinfo("Add Edge", "Select a start vertex and an end vertex")
         self.canvas.bind("<Button-1>", self.newEdge)
         
     def newGraph(self):
@@ -91,7 +93,7 @@ class App:
         
         
     def dfs(self):
-        messagebox.showinfo("DFS", "Click on a start Vertex")
+        messagebox.showinfo("DFS", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handleDFS)
         
     def handleDFS(self, event):
@@ -99,7 +101,7 @@ class App:
         self.eventHandler.handleDFS(self.graph, event)
         
     def bfs(self):
-        messagebox.showinfo("BFS", "Click on a start Vertex")
+        messagebox.showinfo("BFS", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handleBFS)
         
     def handleBFS(self, event):
@@ -107,6 +109,7 @@ class App:
         
     def prims(self):
         #print("Prims")
+        messagebox.showinfo("Prims", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handlePrims)
         #self.eventHandler.handlePrims(graph)
         
@@ -115,6 +118,7 @@ class App:
         
     def dijkstras(self):
         #print("Dijkstra")
+        messagebox.showinfo("Dijkstras", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handleDijkstra)
         
     def handleDijkstra(self, event):

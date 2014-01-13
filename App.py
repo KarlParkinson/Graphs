@@ -1,7 +1,7 @@
 """
 
 {description}
-    Copyright (C) {year} {fullname}
+    Copyright (C) {2014} {Karl Parkinson}
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,10 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+"""
+
+"""
+The GUI interface. Displays the graph, options, and interacts with the user.
 """
 
 import random
@@ -64,60 +68,65 @@ class App:
         menubar.add_cascade(label="Add", menu=addMenu)
         self.root.config(menu=menubar)        
         
+    # Bind mouse click event to add a new vertex
     def addVertices(self):
         messagebox.showinfo("Add Vertex", "Click anywhere to add a vertex")
         self.canvas.bind("<Button-1>", self.newVertex)
-        
+    
+    # Bind mouse click event to add a new edge    
     def addEdges(self):
         messagebox.showinfo("Add Edge", "Select a start vertex and an end vertex")
         self.canvas.bind("<Button-1>", self.newEdge)
         
+    # Wipe canvas, set graph attribute to a new graph
     def newGraph(self):
         self.canvas.delete("all")
         self.graph = DrawableGraph()
         self.canvas.unbind("<Button-1>")
         
+    # Colour all edges and vertices black
     def resetGraph(self):
         for v in self.graph:
             v.setColour("black")
         self.graph.drawGraph(self.canvas)
         
+    # Tell eventHandler to add a new edge
     def newEdge(self, event):
         self.eventHandler.newEdge(event, self.graph)
-        
+    
+    # Get properties back from eventHandler and display
     def properties(self):
-#        print(self.graph.order)
-        properties = self.eventHandler.handleProperties(self.graph)
-  #      print(properties)
-        PropertiesDialog(self.root, properties)
+        properties = self.eventHandler.handleProperties(self.graph) 
+        # Graph has no edges or vertices, so do not show anything
+        if (properties != None):
+            PropertiesDialog(self.root, properties)
         
-        
+     # Bind mouse click event to DFS  
     def dfs(self):
         messagebox.showinfo("DFS", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handleDFS)
         
     def handleDFS(self, event):
-        #print("TTTT")
         self.eventHandler.handleDFS(self.graph, event)
-        
+    
+    # Bind mouse click event to BFS
     def bfs(self):
         messagebox.showinfo("BFS", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handleBFS)
         
     def handleBFS(self, event):
         self.eventHandler.handleBFS(self.graph, event)
-        
+    
+    # Bind mouse click event to Prims
     def prims(self):
-        #print("Prims")
         messagebox.showinfo("Prims", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handlePrims)
-        #self.eventHandler.handlePrims(graph)
         
     def handlePrims(self, event):
         self.eventHandler.handlePrims(self.graph, event)
         
+    # Bind mouse click event to Dijkstras
     def dijkstras(self):
-        #print("Dijkstra")
         messagebox.showinfo("Dijkstras", "Click on a start vertex")
         self.canvas.bind("<Button-1>", self.handleDijkstra)
         

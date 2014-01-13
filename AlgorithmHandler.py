@@ -1,7 +1,7 @@
 """
 
 {description}
-    Copyright (C) {year} {fullname}
+    Copyright (C) {2014} {Karl Parkinson}
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ class AlgorithmHandler:
         self.canvas = canvas
         
         
+    # Recursive version of depth first search
     def DFS(self, graph, start, canvas):
         start.setVisited(True)
         start.setColour("green")
@@ -40,9 +41,10 @@ class AlgorithmHandler:
         time.sleep(0.5)
         for neighbour in start.getNeighbours():
             if (not neighbour.getVisited()):
-                #print(str(start.getId()) + "->" + str(neighbour.getId()))
+                # Explore further
                 self.DFS(graph, neighbour, canvas)  
-                
+    
+    # Breadth first search
     def BFS(self, graph, start, surface):
         for v in graph:
             v.setVisited(False)
@@ -57,20 +59,21 @@ class AlgorithmHandler:
             current = q.pop()
             for neighbour in current.getNeighbours():
                 if(not neighbour.getVisited()):
+                    # Visit neighbour, add to queue
                     neighbour.setVisited(True)
                     neighbour.setColour("red")
                     neighbour.draw(surface)
                     surface.update()
                     time.sleep(0.5)
                     q.append(neighbour)  
-                    
+    
+    # Prim's algorithm for finding MST
     def prims(self, graph, start, canvas):
         for v in graph:
             v.setStatus(0)
             v.setParent(None)
                 
         pq = PriorityQueue()
-        #heapq.heappush(pq, (0, start))
         pq.enQueue((0, start))
         while (not pq.isEmpty()):
             current = pq.deQueue()[1]
@@ -79,35 +82,31 @@ class AlgorithmHandler:
                 graph.drawEdge(current.getParent(), current, canvas, "yellow")
                 canvas.update()
                 time.sleep(0.5)
-                #print(str(current.getParent().getId()) + "->" + str(current.getId()))
             for neighbour in current.getNeighbours():
-                if (neighbour.getStatus() == 0):        
+                if (neighbour.getStatus() == 0):  
+                    # Encountered a new vertex
                     neighbour.setStatus(1)
                     neighbour.setParent(current)
                     neighbour.setpqWeight(current.neighbours[neighbour])
-                    #print(str(neighbour.getpqWeight()))
                     pq.enQueue((neighbour.getpqWeight(), neighbour))
                 elif (neighbour.getStatus() == 1):
                     if (neighbour.getpqWeight() > current.neighbours[neighbour]):
+                        # Found smaller weight, update accordingly
                         old = (neighbour.getpqWeight(), neighbour)
                         neighbour.setpqWeight(current.neighbours[neighbour])
                         pq.updatePriority(old, (neighbour.getpqWeight(), neighbour))
                         neighbour.setParent(current)
-                        
+    
+    # Dijkstra'a algorithm for finding shortest paths                 
     def dijkstras(self, graph, start, canvas):
         pq = PriorityQueue()
         for v in graph:
             v.setStatus(0)
             v.setDistance(float("inf"))
-            #print((v.getDistance(), v))
             pq.enQueue((v.getDistance(), v))
                     
-        #start.setStatus(2)
         start.setDistance(0)
         pq.updatePriority((float("inf"), start), (0, start))
-        #heapq.heappush(pq, (0, start))
-        #pq.enQueue((0, start))
-        #while (not pq.isEmpty()):
         for i in range(0, graph.order):
             current = pq.deQueue()[1]
             current.setStatus(2)
@@ -117,14 +116,16 @@ class AlgorithmHandler:
                 time.sleep(0.5)            
             for neighbour in current.getNeighbours():
                 if (neighbour.getDistance()) > (current.getDistance() + current.neighbours[neighbour]):
+                    # Found smaller weight, update accordingly.
                     old = (neighbour.getDistance(), neighbour)
                     neighbour.setParent(current)
                     neighbour.setDistance(current.getDistance() + current.neighbours[neighbour]) 
                     pq.updatePriority(old, (neighbour.getDistance(), neighbour))
                     
+    # Compute the properties of the graph. Likely a better way to store than just 
+    # jamming into a dictionary.
     def computeProperties(self, graph):
         if (graph.order > 0):
-            #print("here")
             degrees = []
             edges = 0
             vertices = 0

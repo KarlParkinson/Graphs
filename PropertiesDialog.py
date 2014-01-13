@@ -1,3 +1,28 @@
+"""
+
+{description}
+    Copyright (C) {2014} {Karl Parkinson}
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+"""
+
+"""
+The dialog box to display the properties of the graph
+"""
+
 from tkinter import *
 import os
 
@@ -20,7 +45,6 @@ class PropertiesDialog(Toplevel):
         self.initial_focus = self.body(body)
         body.pack(padx=5, pady=5)
         
-        #self.buttonbox()
         
         self.grab_set()
         
@@ -31,14 +55,10 @@ class PropertiesDialog(Toplevel):
         
         self.geometry("+%d+%d" % (parent.winfo_rootx()+50, parent.winfo_rooty()+50))
         
-        #self.initial_focus.focus_set()
         
         self.wait_window(self)
         
     def buttonbox(self):
-        # add standard button box. override if you don't want the
-        # standard buttons
-    
         box = Frame(self)
     
         w = Button(box, text="OK", width=10, command=self.ok, default=ACTIVE)
@@ -51,8 +71,6 @@ class PropertiesDialog(Toplevel):
     
         box.pack()
     
-        #
-        # standard button semantics
     
     def ok(self, event=None):
     
@@ -73,17 +91,14 @@ class PropertiesDialog(Toplevel):
         self.parent.focus_set()
         self.destroy()
     
-        #
-        # command hooks
     
     def validate(self):
-    
-        return 1 # override
+        pass
     
     def apply(self):
+        pass       
     
-        x = 1# override        
-    
+    # Format output
     def body(self, master):
         
         Label(master, text="Order: " + str(self.properties["order"])).grid(row=0)

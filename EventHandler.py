@@ -1,7 +1,7 @@
 """
 
 {description}
-    Copyright (C) {year} {fullname}
+    Copyright (C) {2014} {Karl Parkinson}
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ from Vertex import Vertex, DrawableVertex
 from AlgorithmHandler import AlgorithmHandler
 
 """
-Responsible for handling events, mostly clicks
+Responsible for handling events, mostly clicks. Adds vertices and edges.
+Draws the graph afterwards.
 """
 
 class EventHandler:
@@ -39,27 +40,28 @@ class EventHandler:
         self.endVertex = None
         self.startFound = False
         self.algorithmHandler = AlgorithmHandler(self.canvas)
+        self.nextKey = 0
         
+    # Create a new vertex, add to graph, draw graph.
     def newVertex(self, event, graph):
-        graph.addDrawableVertex((event.x, event.y), random.randint(0, 1000000))
+        vertex = DrawableVertex((event.x, event.y), self.nextKey)
+        graph.addDrawableVertex(vertex)
         graph.drawGraph(self.canvas)
+        self.nextKey += 1
         
+    # Add edge, draw graph
     def newEdge(self, event, graph):
-        #print("New Edge")
-        #print((event.x, event.y))
         for v in graph:
-            #print("Yup")
             if (v.clickedOn((event.x, event.y)) and not self.startFound):
-                #print("Here")
                 self.startFound = True
                 self.startVertex = v
             elif(v.clickedOn((event.x, event.y)) and self.startFound):
-                #print("But")
                 self.endVertex = v
                 graph.addEdge(self.startVertex, self.endVertex, random.randint(0, 10))
                 graph.drawGraph(self.canvas)
                 self.startFound = False
                 
+    # Find start vertex, then call BFS in algHandler
     def handleDFS(self, graph, event):
         for v in graph:
             if(v.clickedOn((event.x, event.y))):
@@ -68,26 +70,29 @@ class EventHandler:
                     v.setVisited(False)
                 self.algorithmHandler.DFS(graph, startVertex, self.canvas)
                 return
-            
+    
+    # Find start vertex, then call DFS in algHandler
     def handleBFS(self, graph, event):
         for v in graph:
             if(v.clickedOn((event.x, event.y))):
                 self.algorithmHandler.BFS(graph, v, self.canvas)
                 return
-            
+    
+    # Find start vertex, then call Prims in algHandler        
     def handlePrims(self, graph, event):
         for v in graph:
             if(v.clickedOn((event.x, event.y))):
                 self.algorithmHandler.prims(graph, v, self.canvas)
                 return        
-        #self.algorithmHandler.prims(graph)
-        
+    
+    # Find start vertex, then call Dijkstras in algHandler
     def handleDijkstra(self, graph, event):
         for v in graph:
             if(v.clickedOn((event.x, event.y))):
                 self.algorithmHandler.dijkstras(graph, v, self.canvas)
                 return    
-            
+    
+    # Call properties function in algHandler        
     def handleProperties(self, graph):
         return self.algorithmHandler.computeProperties(graph)
         

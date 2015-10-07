@@ -56,7 +56,8 @@ class AlgorithmHandler:
         surface.update()
         time.sleep(0.5)
         while(len(q) != 0):
-            current = q.pop()
+            # Using a list as a queue. I know, not great. Should probably use collections.deque
+            current = q.pop(0)
             for neighbour in current.getNeighbours():
                 if(not neighbour.getVisited()):
                     # Visit neighbour, add to queue
@@ -67,7 +68,7 @@ class AlgorithmHandler:
                     time.sleep(0.5)
                     q.append(neighbour)  
     
-    # Prim's algorithm for finding MST
+    # Prim's algorithm for finding MST (minimum spanning tree)
     def prims(self, graph, start, canvas):
         for v in graph:
             v.setStatus(0)
@@ -97,7 +98,7 @@ class AlgorithmHandler:
                         pq.updatePriority(old, (neighbour.getpqWeight(), neighbour))
                         neighbour.setParent(current)
     
-    # Dijkstra'a algorithm for finding shortest paths                 
+    # Dijkstra'a algorithm for finding shortest paths from start node to every other node in a graph.
     def dijkstras(self, graph, start, canvas):
         pq = PriorityQueue()
         for v in graph:

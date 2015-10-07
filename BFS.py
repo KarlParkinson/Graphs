@@ -11,7 +11,8 @@ def BFS(graph, start):
     q = []
     q.append(start)
     while(len(q) != 0):
-        current = q.pop()
+        # Should use collections.dequeue rather than using a list
+        current = q.pop(0)
         for neighbour in current.getNeighbours():
             if(not neighbour.getVisited()):
                 neighbour.setVisited(True)
